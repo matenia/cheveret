@@ -48,6 +48,7 @@ module Cheveret
 
       options[:html] ||= {}
       options[:html][:style] = "width: #{options[:width]}px"
+      options[:html][:class] = "table"
 
       # todo: wrap this puppy in a div
       content_tag(:div, options[:html]) do
@@ -154,9 +155,7 @@ module Cheveret
         end
       end
 
-      @template.content_tag(:div, row,
-        :class => "thead",
-        :style => "width: #{@options[:width]}px;") # todo: missing width?
+      @template.content_tag(:div, row, :class => "thead") # todo: missing width?
     end
 
     # renders the table body, listing the supplied collection of items in table
@@ -173,9 +172,7 @@ module Cheveret
         end
       end
 
-      @template.content_tag(:div, rows.join,
-        :class => "tbody",
-        :style => "width: #{@options[:width]}px;") # todo: missing width?
+      @template.content_tag(:div, rows.join, :class => "tbody") # todo: missing width?
     end
 
   private
