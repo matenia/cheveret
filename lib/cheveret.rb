@@ -212,8 +212,10 @@ module Cheveret
       table_width, columns_width, flexible_columns = @options[:width], 0, []
 
       @columns.each do |name, options|
-        columns_width += options[:width]
-        flexible_columns << name unless options[:flexible] == false
+        unless options[:visible] == false
+          columns_width += options[:width]
+          flexible_columns << name unless options[:flexible] == false
+        end
       end
 
       # todo: handle too-many/too-wide columns
