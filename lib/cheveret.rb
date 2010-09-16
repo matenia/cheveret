@@ -66,7 +66,7 @@ module Cheveret
     # define columns for the table
     def columns(&block)
       @columns = ::ActiveSupport::OrderedHash.new
-      yield
+      instance_eval(&block)
     end
 
     # registers a column
