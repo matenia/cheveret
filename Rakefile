@@ -10,7 +10,7 @@ begin
 application is not very DRY even for the simpler of cases. Cheveret allows you to more
 clearly separate logic and templating and reduce the amount of code in your views.}
     gem.email = "aulankz@gmail.com"
-    gem.homepage = "http://github.com/lankz/cheveret"
+    gem.homepage = "http://github.com/ratecity/cheveret"
     gem.authors = ["Ben Caldwell"]
     gem.add_development_dependency "rspec", ">= 1.2.9"
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
