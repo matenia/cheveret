@@ -5,8 +5,10 @@ begin
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
     gem.name = "cheveret"
-    gem.summary = %Q{TODO: one-line summary of your gem}
-    gem.description = %Q{TODO: longer description of your gem}
+    gem.summary = %Q{Rails library for generating flexible width HTML tables}
+    gem.description = %Q{Generating HTML tables of data in the views of your Rails
+application is not very DRY even for the simpler of cases. Cheveret allows you to more
+clearly separate logic and templating and reduce the amount of code in your views.}
     gem.email = "aulankz@gmail.com"
     gem.homepage = "http://github.com/lankz/cheveret"
     gem.authors = ["Ben Caldwell"]

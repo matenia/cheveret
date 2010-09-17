@@ -10,7 +10,9 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Ben Caldwell"]
   s.date = %q{2010-09-17}
-  s.description = %q{TODO: longer description of your gem}
+  s.description = %q{Generating HTML tables of data in the views of your Rails
+application is not very DRY even for the simpler of cases. Cheveret allows you to more
+clearly separate logic and templating and reduce the amount of code in your views.}
   s.email = %q{aulankz@gmail.com}
   s.extra_rdoc_files = [
     "LICENSE",
@@ -35,7 +37,7 @@ Gem::Specification.new do |s|
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
   s.rubygems_version = %q{1.3.7}
-  s.summary = %q{TODO: one-line summary of your gem}
+  s.summary = %q{Rails library for generating flexible width HTML tables}
   s.test_files = [
     "spec/cheveret_spec.rb",
      "spec/spec_helper.rb"
