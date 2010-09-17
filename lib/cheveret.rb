@@ -161,10 +161,12 @@ module Cheveret
     # renders the table body, listing the supplied collection of items in table
     # format using the configured columns
     def body(&block)
+      alt = false
       rows = @collection.map do |object|
         object_name = object.class.to_s.split('::').last.underscore || ''
-        # todo: render alt class for zebra stripes in body
-        @template.content_tag(:div, :class => ['tr', object_name].join(' ')) do
+        klass = ['tr', object_name]
+        klass << 'alt' unless alt = !alt
+        @template.content_tag(:div, :class => klass.join(' ')) do
           map_columns(:td) do |name|
             output   = nil_capture(name, object, &block) if block_given?
             output ||= @template.content_tag(:span, data_for_column(name, object))
