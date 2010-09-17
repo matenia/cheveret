@@ -131,7 +131,7 @@ module Cheveret
 
     def label
       case @config.label
-      when nil then @name.to_str.humanize # todo: support i18n for column labels
+      when nil then @name.to_s.humanize # todo: support i18n for column labels
       when false then nil
       else @config.label
       end
