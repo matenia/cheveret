@@ -253,7 +253,7 @@ module Cheveret
       end
 
       def sort_tag(column) #:nodoc:
-        return nil unless column.sortable?
+        return nil unless column.sortable? && @url.present?
 
         klass = [ 'sortable' ]
         sort  = column.name
