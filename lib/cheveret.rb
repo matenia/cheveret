@@ -113,20 +113,25 @@ module Cheveret
       self.visible = true
     end
 
-    # hides the column, prevents it from being rendered in the table
-    # helper for setting :visible => false
+    # hides the column, prevents it from being rendered in the table. acts as a
+    # helper for setting <tt>:visible => false</tt>
     def hide
       self.visible = false
     end
 
-    # returns true for columns that have :visible => true or #show called on them
-    # columns are visible by default
+    # returns +true+ for columns that have <tt>:visible => true</tt> or #show called
+    # on them. columns are visible by default
     def visible?
       self.visible != false
     end
 
     def flexible?
       self.flexible != false
+    end
+
+    # returns +true+ unless a column has explicitly set <tt>:sortable => false</tt>
+    def sortable?
+      self.sortable != false
     end
 
     def label
@@ -173,6 +178,7 @@ module Cheveret
       builder.render(Table.new, self, options, &block)
     end
 
+    # the default #TableBuilder class generates an HTML table using div tags
     class TableBuilder
       extend ::Forwardable
       def_delegators :@table, :columns
@@ -192,20 +198,22 @@ module Cheveret
 
         @width = options.delete(:width)
         @collection = options.delete(:collection)
+        @url = options.delete(:url)
       end
 
       def header(*args, &block)
         @table.resize!(@width)
 
-        row = @template.content_tag(:div, :class => "tr") do
+        row = content_tag(:div, :class => "tr") do
           map_columns(:th) do |column|
             # todo: prevent output of empty <a> tag for header label
             output   = nil_capture(column, &block) if block_given?
-            output ||= @template.content_tag(:a, column.label)
+            output ||= sort_tag(column) if column.sortable?
+            output ||= content_tag(:span, column.label)
           end
         end
 
-        @template.content_tag(:div, row, :class => "thead")
+        content_tag(:div, row, :class => "thead")
       end
 
       def body(&block)
@@ -215,15 +223,15 @@ module Cheveret
         rows = @collection.map do |object|
           object_name = object.class.to_s.split('::').last.underscore || ''
           klass = [ 'tr', object_name, (alt = !alt) ? nil : 'alt' ].compact
-          @template.content_tag(:div, :class => klass.join(' ')) do
+          content_tag(:div, :class => klass.join(' ')) do
             map_columns(:td) do |column|
               output   = nil_capture(column, object, &block) if block_given?
-              output ||= @template.content_tag(:span, column.data(object))
+              output ||= content_tag(:span, column.data(object))
             end
           end
         end
 
-        @template.content_tag(:div, rows.join, :class => "tbody")
+        content_tag(:div, rows.join, :class => "tbody")
       end
 
     private
@@ -233,15 +241,37 @@ module Cheveret
           attrs = { :class => [type, column.name].join(' '),
                     :style => "width: #{column.width}px;" }
 
-          @template.content_tag(:div, attrs) do
+          content_tag(:div, attrs) do
             yield(column)
           end if column.visible?
         end
       end
 
       def nil_capture(*args, &block) #:nodoc:
-        custom = @template.capture(*args, &block).strip
+        custom = capture(*args, &block).strip
         output = custom.empty? ? nil : custom
+      end
+
+      def sort_tag(column) #:nodoc:
+        return nil unless column.sortable?
+
+        klass = [ 'sortable' ]
+        sort  = column.name
+        order = "asc"
+
+        if params[:sort].to_s == column.name.to_s
+          klass << [ 'sorted', params[:order] ]
+          order = "desc" if params[:order] == "asc"
+        end
+
+        content_tag(:a, column.label, {
+          :class => klass.flatten.join(' '),
+          :href => url_for(@url.merge({ :sort => sort, :order => order })) })
+      end
+
+      def method_missing(method_name, *args, &block) #:nodoc:
+        return @template.send(method_name, *args, &block) if @template.respond_to?(method_name)
+        super
       end
     end
   end
