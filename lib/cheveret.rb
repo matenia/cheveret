@@ -160,11 +160,11 @@ module Cheveret
       def_delegators :@table, :columns
 
       def self.render(table, template, options={}, &block)
-        # todo: merge container element with :html passed into table_for
-        attrs = { :class => "table",
-                  :style => "width: #{options[:width]}px;" }
+        html_attrs = options.delete(:html) || {}
+        html_attrs.merge!({ :class => "table",
+                            :style => "width: #{options[:width]}px;" })
 
-        template.content_tag(:div, attrs) do
+        template.content_tag(:div, html_attrs) do
           template.capture(self.new(table, template, options), &block)
         end
       end
