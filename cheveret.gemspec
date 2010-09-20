@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{cheveret}
-  s.version = "1.0.0"
+  s.version = "1.1.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Ben Caldwell"]
-  s.date = %q{2010-09-17}
+  s.date = %q{2010-09-20}
   s.description = %q{Generating HTML tables of data in the views of your Rails
 application is not very DRY even for the simpler of cases. Cheveret allows you to more
 clearly separate logic and templating and reduce the amount of code in your views.}
@@ -33,7 +33,7 @@ clearly separate logic and templating and reduce the amount of code in your view
      "spec/spec.opts",
      "spec/spec_helper.rb"
   ]
-  s.homepage = %q{http://github.com/lankz/cheveret}
+  s.homepage = %q{http://github.com/ratecity/cheveret}
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
   s.rubygems_version = %q{1.3.7}
