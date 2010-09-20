@@ -90,6 +90,13 @@ Or, if you're using _Sunspot_, list stored search results without hitting the da
     = cheveret_body_for @books do |name, column, book|
       = book.stored(name)
 
+Todo
+----
+
+* Make the documentation tell fewer lies
+* Support i18n translations for table headers
+* Handle exceeding table width, drop columns
+
 Note on Patches/Pull Requests
 -----------------------------
 
