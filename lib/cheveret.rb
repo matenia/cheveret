@@ -147,7 +147,25 @@ module Cheveret
   end
 
   module Helpers
-    # renders a table for a collection of objects
+    # view helper that facilities the rendering of tables for a collection of similar
+    # objects
+    #
+    # behaves much in the same way as Rails +form+for+ helper in that it takes a proc
+    # and provides access to a table builder object. the entire block is captured, so
+    # additional markup can be output at any point
+    #
+    #  <% table_for @books, :width => 480 do |t| %>
+    #    <% t.columns :title, :author, :publisher, :price %>
+    #    <% t.header %>
+    #    <% t.body %>
+    #  <% end %>
+    #
+    # === Options
+    # * <tt>:width</tt> - the total width of the table in pixels
+    # * <tt>:html</tt>  - a hash of html attributes used for the form container
+    # * <tt>:url</tt>   - used to generate urls for sortable columns
+    #
+    # === Examples
     def table_for(collection, options={}, &block)
       builder = options.delete(:builder) || ActionView::Base.default_table_builder
 
