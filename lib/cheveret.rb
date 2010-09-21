@@ -27,8 +27,9 @@ module Cheveret
   class Table
     attr_accessor :columns
 
-    def initialize()
+    def initialize(&block)
       @columns = ::ActiveSupport::OrderedHash.new
+      yield self if block_given?
     end
 
     def columns(*args, &block)
@@ -155,7 +156,7 @@ module Cheveret
     # view helper that facilities the rendering of tables for a collection of similar
     # objects
     #
-    # behaves much in the same way as Rails +form+for+ helper in that it takes a proc
+    # behaves much in the same way as Rails +form_for+ helper in that it takes a proc
     # and provides access to a table builder object. the entire block is captured, so
     # additional markup can be output at any point
     #
@@ -169,13 +170,15 @@ module Cheveret
     # * <tt>:width</tt> - the total width of the table in pixels
     # * <tt>:html</tt>  - a hash of html attributes used for the form container
     # * <tt>:url</tt>   - used to generate urls for sortable columns
+    # * <tt>:table</tt> - specify a pre-configured table to render
     #
     # === Examples
     def table_for(collection, options={}, &block)
       builder = options.delete(:builder) || ActionView::Base.default_table_builder
+      table   = options.delete(:table) || Table.new
 
       options.merge!({ :collection => collection })
-      builder.render(Table.new, self, options, &block)
+      builder.render(table, self, options, &block)
     end
 
     # the default #TableBuilder class generates an HTML table using div tags
