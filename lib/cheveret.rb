@@ -243,6 +243,7 @@ module Cheveret
         @table.columns.map do |column|
           attrs = { :class => [type, column.name].join(' '),
                     :style => "width: #{column.width}px;" }
+          attrs[:class] << ' sortable' if column.sortable?
 
           content_tag(:div, attrs) do
             yield(column)
@@ -258,18 +259,13 @@ module Cheveret
       def sort_tag(column) #:nodoc:
         return nil unless column.sortable? && @url.present?
 
-        klass = [ 'sortable' ]
         sort  = column.name
-        order = "asc"
+        order = "desc" if params[:sort].to_s == column.name.to_s && params[:order] == "asc"
+        attrs = { :href => url_for(@url.merge({ :sort => sort, :order => order || "desc" })) }
 
-        if params[:sort].to_s == column.name.to_s
-          klass << [ 'sorted', params[:order] ]
-          order = "desc" if params[:order] == "asc"
-        end
+        attrs[:class] = "sorted #{params[:order]}" if params[:sort].to_s == column.name.to_s
 
-        content_tag(:a, column.label, {
-          :class => klass.flatten.join(' '),
-          :href => url_for(@url.merge({ :sort => sort, :order => order })) })
+        content_tag(:a, column.label, attrs)
       end
 
       def method_missing(method_name, *args, &block) #:nodoc:
