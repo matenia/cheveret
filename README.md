@@ -96,6 +96,8 @@ Todo
 * Make the documentation tell fewer lies
 * Support i18n translations for table headers
 * Handle exceeding table width, drop columns
+* Better support for ActiveRecord model objects
+* Write some tests
 
 Note on Patches/Pull Requests
 -----------------------------
