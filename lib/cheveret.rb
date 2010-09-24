@@ -92,14 +92,14 @@ module Cheveret
   class Column
     extend ::Forwardable
 
-    [ :width, :visible, :flexible, :label, :sortable ].each do |attr|
+    attr_accessor :name, :data, :width
+
+    [ :visible, :flexible, :label, :sortable ].each do |attr|
       class_eval <<-RUBY_EVAL, __FILE__, __LINE__ + 1
         def_delegator :@config, :#{attr}, :#{attr}
         def_delegator :@config, :#{attr}=, :#{attr}=
       RUBY_EVAL
     end
-
-    attr_accessor :name
 
     def initialize(column_name, config={})
       @name = column_name
@@ -142,13 +142,14 @@ module Cheveret
       else @config.label
       end
     end
-
+=begin
     def data(object)
       object.send(self.name) if object.respond_to?(self.name)
     end
+=end
 
     def width
-      @config.width || 0
+      @width || 0
     end
   end
 
@@ -179,6 +180,169 @@ module Cheveret
 
       options.merge!({ :collection => collection })
       builder.render(table, self, options, &block)
+    end
+
+    def define_table(&block)
+      # fixme: rename temporary table builder class
+      UberTableBuilder.new(self, &block)
+    end
+
+    class UberTableBuilder
+      def initialize(template, &block)
+        @template = template
+
+        @columns = ::ActiveSupport::OrderedHash.new
+
+
+        instance_eval(&block) if block_given?
+      end
+
+      def header_default(&block) ; end
+
+      def data_default(&block) ; end
+
+      # registers a new column with the specified options
+      #
+      # @example minimum required to define a column
+      #   column :author
+      #
+      # @example flexible width, sortable column
+      #   column :description => [ :flexible, :sortable ]
+      #
+      # @example fixed with column with no header label
+      #   column :check_box, :label => false, :width => 30
+      #
+      # @example sortable column with custom header label
+      #   column :published => [ :sortable ], :label => "Publish Date"
+      #
+      # @param [Symbol,Array] name_or_hash
+      #   the name of the column, optionally combined with any flags that should be
+      #   set to +true+
+      #
+      # @param [Hash] options a hash of options for the column
+      #
+      # @option options [Proc] :data
+      #
+      # @option options [Boolean] :flexible (false)
+      #   if +true+ the column will resize automatically depending on the size of the
+      #   table
+      #
+      # @option options [Proc] :header
+      #
+      # @option options [String,Boolean] :label
+      #   used to determine what gets used as a label in the column header. if set to
+      #   +false+ no lable will be rendered
+      #
+      # @option options [Boolean] :sortable (false)
+      #
+      # @option options [Integer] :width
+      def column(name_or_hash, options={})
+        if name_or_hash.is_a?(Hash)
+          name = name_or_hash.except(:label, :width).keys.first
+          name_or_hash.delete(name).each { |k| options[k] = true }
+          options.merge!(name_or_hash)
+        end
+
+        @columns[name || name_or_hash] = Column.new(name || name_or_hash, options)
+      end
+
+      def columns ; end
+
+      def header ; end
+
+      # define how to extract and render data value for a particular column
+      #
+      # chevert will call the block you define here to render the inner part of the
+      # table data cell for each object in the collection
+      #
+      # if you don't specify one or more column names when calling this method,
+      # cheveret will assume that you're defining the data block for the last column
+      # you registered
+      #
+      # @example format money values in the view
+      #   - column :price
+      #   - data do |book|
+      #     %span= number_to_currency book.price
+      #
+      # @example define data block for multiple columns
+      #   - column :title
+      #   - column :author
+      #   - data [ :title, :author ] do |column, object|
+      #     %p{ :class => column.name }= object.send(column.name)
+      def data(*args, &block)
+        options = args.extract_options!
+
+        [ *args.first || @columns.keys.last ].each do |column_name|
+          column = @columns[column_name ]
+          column.data = block
+
+          instance_eval <<-RUBY_EVAL, __FILE__, __LINE__ + 1
+            def data_for_#{column.name}(object)
+              cell(:td, @columns[:#{column.name}]) do
+                capture(object, &@columns[:#{column.name}].data)
+              end
+            end
+          RUBY_EVAL
+        end
+      end
+
+      def render(collection)
+        content_tag(:div, body(collection), {
+          :class => 'table'
+        })
+      end
+
+      def header ; end
+
+      def body(collection)
+        content_tag(:div, rows(collection), {
+          :class => 'tbody'
+        })
+      end
+
+      def rows(collection)
+        collection.map { |object| row(object) }
+      end
+
+      # render a single table row for the specified data object
+      #
+      # @param [Object] object
+      # @param [Hash]   options
+      #
+      # @option options [Array] :only
+      # @option options [Array] :except
+      # @option options [Array,String] :class
+      def row(object, options={})
+        # todo: allow :only and :except to not be an array
+        cols = @columns.keys.reject { |k| !options[:only].include?(k) } if options[:only]
+        cols = @columns.keys.reject { |k| options[:except].include?(k) } if options[:except]
+
+        content_tag(:div, :class => 'tr') do
+          cols.map do |column_name|
+            column = @columns[column_name]
+            cell(:th, column) { send(:"data_for_#{column.name}", object) rescue nil }
+          end
+        end
+      end
+
+      def cell(type, column, &block)
+        content_tag(:div, yield, {
+          :class => [type, column.name].join(' ')#,
+          #:style => "width: #{@resized[column.name]}px;"
+        })
+      end
+
+      def resize! ; end
+
+    protected
+
+      def method_missing(method_name, *args, &block) #:nodoc:
+        if @template.respond_to?(method_name)
+          @template.send(method_name, *args, &block)
+        else
+          super
+        end
+      end
     end
 
     # the default #TableBuilder class generates an HTML table using div tags
