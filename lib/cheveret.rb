@@ -169,29 +169,36 @@ module Cheveret
       end
 
       def header(options={})
+        resize!(options.delete(:width)) if options[:width].present?
+
         url = options.delete(:url) || {} # todo: current controller action
 
-        content_tag(:div, :class => 'thead') do
-          @columns.values.map do |column|
-            cell(:th, column) do
-              if column.sortable?
-                content_tag(:a, column.label)
-              else
-                column.label
-              end
+        row  = @columns.values.map do |column|
+          cell(:th, column) do
+            if column.sortable?
+              content_tag(:a, column.label)
+            else
+              column.label
             end
           end
         end
+
+        content_tag(:div, row, {
+          :class => 'thead'
+        })
       end
 
       def body(collection, options={})
+        resize!(options.delete(:width)) if options[:width].present?
+
         content_tag(:div, rows(collection), {
           :class => 'tbody'
         })
       end
 
       def rows(collection, options={})
-        collection.map { |object| row(object) }
+        resize!(options.delete(:width)) if options[:width].present?
+        collection.map { |object| row(object) }.join
       end
 
       # render a single table row for the specified data object
