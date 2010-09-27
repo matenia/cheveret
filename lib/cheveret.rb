@@ -92,9 +92,9 @@ module Cheveret
   class Column
     extend ::Forwardable
 
-    attr_accessor :name, :data, :width
+    attr_accessor :name, :data, :flexible, :sortable, :width
 
-    [ :visible, :flexible, :label, :sortable ].each do |attr|
+    [ :visible, :label, ].each do |attr|
       class_eval <<-RUBY_EVAL, __FILE__, __LINE__ + 1
         def_delegator :@config, :#{attr}, :#{attr}
         def_delegator :@config, :#{attr}=, :#{attr}=
@@ -127,12 +127,12 @@ module Cheveret
     end
 
     def flexible?
-      self.flexible != false
+      @flexible != false
     end
 
     # returns +true+ unless a column has explicitly set <tt>:sortable => false</tt>
     def sortable?
-      self.sortable != false
+      @sortable != false
     end
 
     def label
@@ -278,29 +278,35 @@ module Cheveret
 
           instance_eval <<-RUBY_EVAL, __FILE__, __LINE__ + 1
             def data_for_#{column.name}(object)
-              cell(:td, @columns[:#{column.name}]) do
-                capture(object, &@columns[:#{column.name}].data)
-              end
+              capture(object, &@columns[:#{column.name}].data)
             end
           RUBY_EVAL
         end
       end
 
-      def render(collection)
-        content_tag(:div, body(collection), {
-          :class => 'table'
-        })
+      def render(collection, options={})
+        resize!(options.delete(:width)) if options[:width].present?
+
+        content_tag(:div, :class => 'table') do
+          header(options) + body(collection, options)
+        end
       end
 
-      def header ; end
+      def header(options={})
+        content_tag(:div, :class => 'thead') do
+          @columns.values.map do |column|
+            cell(:th, column) { column.name.to_s.humanize }
+          end
+        end
+      end
 
-      def body(collection)
+      def body(collection, options={})
         content_tag(:div, rows(collection), {
           :class => 'tbody'
         })
       end
 
-      def rows(collection)
+      def rows(collection, options={})
         collection.map { |object| row(object) }
       end
 
@@ -312,27 +318,49 @@ module Cheveret
       # @option options [Array] :only
       # @option options [Array] :except
       # @option options [Array,String] :class
+      # @option options [Integer] :width
       def row(object, options={})
         # todo: allow :only and :except to not be an array
         cols = @columns.keys.reject { |k| !options[:only].include?(k) } if options[:only]
         cols = @columns.keys.reject { |k| options[:except].include?(k) } if options[:except]
+        cols ||= @columns.keys
 
         content_tag(:div, :class => 'tr') do
           cols.map do |column_name|
             column = @columns[column_name]
-            cell(:th, column) { send(:"data_for_#{column.name}", object) rescue nil }
+            cell(:td, column) { send(:"data_for_#{column.name}", object) rescue nil }
           end
         end
       end
 
       def cell(type, column, &block)
         content_tag(:div, yield, {
-          :class => [type, column.name].join(' ')#,
-          #:style => "width: #{@resized[column.name]}px;"
+          :class => [type, column.name].join(' '),
+          :style => "width: #{@widths[column.name] || column.width}px;"
         })
       end
 
-      def resize! ; end
+      def resize!(new_width)
+        @widths = {}
+
+        columns_width = 0
+        flexibles     = []
+
+        @columns.values.each do |column|
+          columns_width += column.width
+          flexibles << column if column.flexible?
+        end
+
+        # todo: handle too-many/too-wide columns
+        raise "uh-oh spaghettio-s" if columns_width > new_width
+
+        # todo: fix rounding in with calculation
+        # todo: trim last column that fits into table width if necessary
+        if columns_width < new_width && !flexibles.empty?
+          padding = (new_width - columns_width) / flexibles.length
+          flexibles.each { |column| @widths[column.name] = column.width + padding }
+        end
+      end
 
     protected
 
