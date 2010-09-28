@@ -23,7 +23,7 @@
 
 module Cheveret
   module Rendering
-    def render(collection, new_config={})
+    def render(collection, options={})
       content_tag(:div, :class => 'table') do
         header(options) + body(collection, options)
       end

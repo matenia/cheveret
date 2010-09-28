@@ -37,8 +37,8 @@ module Cheveret
     include DSL
     include Rendering
     include Config
-    include Filtering
     include Resizing
+    include Filtering
   # include Sorting
 
   protected

@@ -33,5 +33,7 @@ module Cheveret
       super
     end
 
+    # todo: wrap around header, body, rows and allow localised :only and :except
+
   end
 end
