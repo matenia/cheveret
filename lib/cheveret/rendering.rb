@@ -24,8 +24,10 @@
 module Cheveret
   module Rendering
     def render(collection, options={})
-      content_tag(:div, :class => 'table') do
-        header(options) + body(collection, options)
+      options[:class] = [ 'table', options[:class] ].flatten.join(' ').strip
+
+      content_tag(:div, options) do
+        header + body(collection)
       end
     end
 
