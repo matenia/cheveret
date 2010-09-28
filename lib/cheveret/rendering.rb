@@ -32,8 +32,6 @@ module Cheveret
     end
 
     def header(options={})
-      url = options.delete(:url) || {} # todo: current controller action
-
       row  = @columns.values.map do |column|
         cell(:th, column) do
           if column.sortable?
@@ -77,7 +75,7 @@ module Cheveret
     end
 
     def cell(type, column, options={}, &block)
-      options[:class] = [ type, column.name, options[:class] ].flatten.collect.join(' ')
+      options[:class] = [ type, column.name, options[:class] ].flatten.join(' ').strip
       content_tag(:div, yield, options)
     end
 

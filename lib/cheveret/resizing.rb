@@ -59,7 +59,7 @@ module Cheveret
     end
 
     def cell(type, column, options={}, &block)
-      options[:style] = "width: #{@widths[column.name]}px"
+      options[:style] = "width: #{@widths[column.name] || column.width}px"
       super
     end
 

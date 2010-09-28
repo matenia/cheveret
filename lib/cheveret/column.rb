@@ -33,7 +33,7 @@ module Cheveret
     end
 
     def flexible?
-      @flexible != false
+      @flexible == true
     end
 
     def label
@@ -46,7 +46,7 @@ module Cheveret
 
     # returns +true+ unless a column has explicitly set <tt>:sortable => false</tt>
     def sortable?
-      @sortable != false
+      @sortable == true
     end
 
     def width
