@@ -67,14 +67,8 @@ module Cheveret
     # @option options [Array,String] :class
     # @option options [Integer] :width
     def row(object, options={})
-      # todo: allow :only and :except to not be an array
-      cols = @columns.keys.reject { |k| !options[:only].include?(k) } if options[:only]
-      cols = @columns.keys.reject { |k| options[:except].include?(k) } if options[:except]
-      cols ||= @columns.keys
-
       content_tag(:div, :class => 'tr') do
-        cols.map do |column_name|
-          column = @columns[column_name]
+        @columns.values.map do |column|
           cell(:td, column) { send(:"data_for_#{column.name}", object) rescue nil }
         end
       end

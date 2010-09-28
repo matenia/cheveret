@@ -25,7 +25,7 @@ require 'active_support/ordered_hash'
 
 module Cheveret
   class Base
-    attr_accessor :columns
+    # attr_accessor :columns
 
     def initialize(template, &block)
       @template = template
@@ -34,11 +34,16 @@ module Cheveret
       instance_eval(&block) if block_given?
     end
 
+    def columns
+      @columns
+    end
+
     include DSL
     include Rendering
     include Config
+    include Filtering
     include Resizing
-    # include Sorting
+  # include Sorting
 
   protected
 

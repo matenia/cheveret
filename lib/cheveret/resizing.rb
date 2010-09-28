@@ -87,5 +87,9 @@ module Cheveret
       end
     end
 
+    def weigh!
+      raise NotImplementedError
+    end
+
   end
 end

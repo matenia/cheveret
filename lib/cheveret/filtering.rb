@@ -22,13 +22,16 @@
 #++
 
 module Cheveret
-  autoload :Base,      'cheveret/base'
-  autoload :Column,    'cheveret/column'
-  autoload :Config,    'cheveret/config'
-  autoload :DSL,       'cheveret/dsl'
-  autoload :Filtering, 'cheveret/filtering'
-  autoload :Helper,    'cheveret/helper'
-  autoload :Rendering, 'cheveret/rendering'
-  autoload :Resizing,  'cheveret/resizing'
+  module Filtering
+    def config(new_config)
+      except, only = new_config[:except], new_config[:only]
+      if (except || only)
+        @columns.reject! { |k, v| !only.include?(k) } if only
+        # todo: support use of except
+      end
 
+      super
+    end
+
+  end
 end
