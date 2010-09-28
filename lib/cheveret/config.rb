@@ -22,12 +22,23 @@
 #++
 
 module Cheveret
-  autoload :Base,      'cheveret/base'
-  autoload :Column,    'cheveret/column'
-  autoload :Config,    'cheveret/config'
-  autoload :DSL,       'cheveret/dsl'
-  autoload :Helper,    'cheveret/helper'
-  autoload :Rendering, 'cheveret/rendering'
-  autoload :Resizing,  'cheveret/resizing'
+  module Config
+    # dsl method for defining default configuration options for table rendering
+    #
+    # @param [Hash] new_config a hash of configuration options to be merged with
+    #                          any existing configuration options
+    def config(new_config={})
+      if @config then @config.merge!(new_config) else @config = new_config.dup end
+    end
 
+    [ :render, :header, :body, :rows ].each do |renderer|
+      class_eval <<-RUBY_EVAL, __FILE__, __LINE__ + 1
+        def #{renderer}(*args)
+          config = @config.merge(args.extract_options!)
+          super(*args << config)
+        end
+      RUBY_EVAL
+    end
+
+  end
 end

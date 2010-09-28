@@ -29,16 +29,35 @@ module Cheveret
       end
     end
 
+    # set width constraint for the table.
+    #
+    # if the width value is different to that previously set, cheveret will call the
+    # #resize! method to adjust the widths of flexible columns to fit
+    #
+    # @param [Integer] new_width the maximum width of the table in pixels
+    def width=(new_width)
+      return @width if new_width == @width
+
+      @width = new_width
+      resize!
+    end
+
+    # some meta magic - make sure that the table is resized correctly before any of
+    # the render methods start generating output
     [ :render, :header, :body, :rows ].each do |renderer|
       class_eval <<-RUBY_EVAL, __FILE__, __LINE__ + 1
-        def #{renderer}(*)
-          # todo: check if we need to resize
-          super
+        def #{renderer}(*args)
+          config = args.extract_options!
+
+          width = config[:width]
+          super(args << config)
         end
       RUBY_EVAL
     end
 
-    def resize!(new_width)
+    # resize flexible columns in attempt to reduce the total width, making sure it
+    # fits within the constraints of the table
+    def resize!
       @widths = {}
 
       columns_width = 0
@@ -50,14 +69,15 @@ module Cheveret
       end
 
       # todo: handle too-many/too-wide columns
-      raise "uh-oh spaghettio-s" if columns_width > new_width
+      raise "uh-oh spaghettio-s" if columns_width > @width
 
       # todo: fix rounding in with calculation
       # todo: trim last column that fits into table width if necessary
-      if columns_width < new_width && !flexibles.empty?
-        padding = (new_width - columns_width) / flexibles.length
+      if columns_width < @width && !flexibles.empty?
+        padding = (@width - columns_width) / flexibles.length
         flexibles.each { |column| @widths[column.name] = column.width + padding }
       end
     end
+
   end
 end

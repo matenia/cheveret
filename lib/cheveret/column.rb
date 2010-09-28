@@ -23,7 +23,8 @@
 
 module Cheveret
   class Column
-    attr_accessor :name, :data, :flexible, :label, :sortable, :width
+    attr_accessor :name, :data, :label, :weight, :width
+    attr_accessor :flexible, :sortable
 
     def initialize(name, config={})
       config.merge(:name => name).each do |k, v|
@@ -51,5 +52,6 @@ module Cheveret
     def width
       @width || 0
     end
+
   end
 end

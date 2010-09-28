@@ -21,22 +21,24 @@
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #++
 
+require 'active_support/ordered_hash'
+
 module Cheveret
   class Base
-    def initialize(template, config={}, &block)
-      @config, @template = config, template
+    attr_accessor :columns
 
-      @width, @widths = 0, {}
-      @columns        = ::ActiveSupport::OrderedHash.new
+    def initialize(template, &block)
+      @template = template
+      @columns  = ::ActiveSupport::OrderedHash.new
 
-      # dsl block gets eval'd in the instance, method_missing forwards calls to the
-      # template so that blocks get output correctly
       instance_eval(&block) if block_given?
     end
 
     include DSL
     include Rendering
+    include Config
     include Resizing
+    # include Sorting
 
   protected
 

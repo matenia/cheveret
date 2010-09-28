@@ -119,5 +119,6 @@ module Cheveret
     def header(*args, &block)
       raise NotImplementedError
     end
+
   end
 end

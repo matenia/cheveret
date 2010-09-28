@@ -23,14 +23,15 @@
 
 module Cheveret
   module Helper
-    def define_table(config={}, &block)
-      builder = config.delete(:builder) || ActionView::Base.default_table_builder
-      builder.new(self, config, &block)
+    def define_table(options={}, &block)
+      builder = options.delete(:builder) || ActionView::Base.default_table_builder
+      builder.new(self, &block)
     end
 
     ActionView::Base.class_eval do
       cattr_accessor :default_table_builder
       self.default_table_builder = Cheveret::Base
     end
+
   end
 end

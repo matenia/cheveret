@@ -82,9 +82,10 @@ module Cheveret
 
     def cell(type, column, &block)
       content_tag(:div, yield, {
-        :class => [type, column.name].join(' '),
-        :style => "width: #{@widths[column.name] || column.width}px;"
+        :class => [type, column.name].join(' ')#,
+        #:style => "width: #{@widths[column.name] || column.width}px;"
       })
     end
+
   end
 end
