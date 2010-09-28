@@ -1,6 +1,8 @@
 require 'rubygems'
 require 'rake'
 
+require File.expand_path('../lib/cheveret/version', __FILE__)
+
 begin
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
@@ -12,8 +14,9 @@ clearly separate logic and templating and reduce the amount of code in your view
     gem.email = "aulankz@gmail.com"
     gem.homepage = "http://github.com/ratecity/cheveret"
     gem.authors = ["Ben Caldwell"]
+    gem.version = Cheveret::VERSION::STRING
+
     gem.add_development_dependency "rspec", ">= 1.2.9"
-    # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
   end
   Jeweler::GemcutterTasks.new
 rescue LoadError
