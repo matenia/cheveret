@@ -80,11 +80,9 @@ module Cheveret
       end
     end
 
-    def cell(type, column, &block)
-      content_tag(:div, yield, {
-        :class => [type, column.name].join(' ')#,
-        #:style => "width: #{@widths[column.name] || column.width}px;"
-      })
+    def cell(type, column, options={}, &block)
+      options[:class] = [ type, column.name, options[:class] ].flatten.collect.join(' ')
+      content_tag(:div, yield, options)
     end
 
   end

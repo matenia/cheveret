@@ -23,10 +23,8 @@
 
 module Cheveret
   module Resizing
-    def self.included(base)
-      base.module_eval do
-        attr_accessor :width
-      end
+    def width
+      @width || 0
     end
 
     # set width constraint for the table.
@@ -42,6 +40,11 @@ module Cheveret
       resize!
     end
 
+    def config(new_config={})
+      self.width = new_config[:width] if new_config[:width]
+      super
+    end
+
     # some meta magic - make sure that the table is resized correctly before any of
     # the render methods start generating output
     [ :render, :header, :body, :rows ].each do |renderer|
@@ -49,10 +52,15 @@ module Cheveret
         def #{renderer}(*args)
           config = args.extract_options!
 
-          width = config[:width]
-          super(args << config)
+          width = config.delete(:width)
+          super(*args << config)
         end
       RUBY_EVAL
+    end
+
+    def cell(type, column, options={}, &block)
+      options[:style] = "width: #{@widths[column.name]}px"
+      super
     end
 
     # resize flexible columns in attempt to reduce the total width, making sure it

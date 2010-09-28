@@ -25,8 +25,8 @@ module Cheveret
   module Config
     # dsl method for defining default configuration options for table rendering
     #
-    # @param [Hash] new_config a hash of configuration options to be merged with
-    #                          any existing configuration options
+    # @param [Hash] new_config
+    #   a hash of configuration options. gets merged with any existing config
     def config(new_config={})
       if @config then @config.merge!(new_config) else @config = new_config.dup end
     end
