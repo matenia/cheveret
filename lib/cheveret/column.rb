@@ -22,10 +22,34 @@
 #++
 
 module Cheveret
-  autoload :Base,      'cheveret/base'
-  autoload :Column,    'cheveret/column'
-  autoload :DSL,       'cheveret/dsl'
-  autoload :Helper,    'cheveret/helper'
-  autoload :Rendering, 'cheveret/rendering'
-  autoload :Resizing,  'cheveret/resizing'
+  class Column
+    attr_accessor :name, :data, :flexible, :label, :sortable, :width
+
+    def initialize(name, config={})
+      config.merge(:name => name).each do |k, v|
+        instance_variable_set(:"@#{k}", v) if respond_to?(:"#{k}=")
+      end
+    end
+
+    def flexible?
+      @flexible != false
+    end
+
+    def label
+      case @label
+      when nil then @name.to_s.humanize # todo: support i18n for column labels
+      when false then nil
+      else @label
+      end
+    end
+
+    # returns +true+ unless a column has explicitly set <tt>:sortable => false</tt>
+    def sortable?
+      @sortable != false
+    end
+
+    def width
+      @width || 0
+    end
+  end
 end

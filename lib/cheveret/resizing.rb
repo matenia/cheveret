@@ -22,10 +22,42 @@
 #++
 
 module Cheveret
-  autoload :Base,      'cheveret/base'
-  autoload :Column,    'cheveret/column'
-  autoload :DSL,       'cheveret/dsl'
-  autoload :Helper,    'cheveret/helper'
-  autoload :Rendering, 'cheveret/rendering'
-  autoload :Resizing,  'cheveret/resizing'
+  module Resizing
+    def self.included(base)
+      base.module_eval do
+        attr_accessor :width
+      end
+    end
+
+    [ :render, :header, :body, :rows ].each do |renderer|
+      class_eval <<-RUBY_EVAL, __FILE__, __LINE__ + 1
+        def #{renderer}(*)
+          # todo: check if we need to resize
+          super
+        end
+      RUBY_EVAL
+    end
+
+    def resize!(new_width)
+      @widths = {}
+
+      columns_width = 0
+      flexibles     = []
+
+      @columns.values.each do |column|
+        columns_width += column.width
+        flexibles << column if column.flexible?
+      end
+
+      # todo: handle too-many/too-wide columns
+      raise "uh-oh spaghettio-s" if columns_width > new_width
+
+      # todo: fix rounding in with calculation
+      # todo: trim last column that fits into table width if necessary
+      if columns_width < new_width && !flexibles.empty?
+        padding = (new_width - columns_width) / flexibles.length
+        flexibles.each { |column| @widths[column.name] = column.width + padding }
+      end
+    end
+  end
 end

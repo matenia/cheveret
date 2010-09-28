@@ -22,10 +22,15 @@
 #++
 
 module Cheveret
-  autoload :Base,      'cheveret/base'
-  autoload :Column,    'cheveret/column'
-  autoload :DSL,       'cheveret/dsl'
-  autoload :Helper,    'cheveret/helper'
-  autoload :Rendering, 'cheveret/rendering'
-  autoload :Resizing,  'cheveret/resizing'
+  module Helper
+    def define_table(config={}, &block)
+      builder = config.delete(:builder) || ActionView::Base.default_table_builder
+      builder.new(self, config, &block)
+    end
+
+    ActionView::Base.class_eval do
+      cattr_accessor :default_table_builder
+      self.default_table_builder = Cheveret::Base
+    end
+  end
 end

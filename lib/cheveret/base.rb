@@ -22,10 +22,33 @@
 #++
 
 module Cheveret
-  autoload :Base,      'cheveret/base'
-  autoload :Column,    'cheveret/column'
-  autoload :DSL,       'cheveret/dsl'
-  autoload :Helper,    'cheveret/helper'
-  autoload :Rendering, 'cheveret/rendering'
-  autoload :Resizing,  'cheveret/resizing'
+  class Base
+    def initialize(template, config={}, &block)
+      @config, @template = config, template
+
+      @width, @widths = 0, {}
+      @columns        = ::ActiveSupport::OrderedHash.new
+
+      # dsl block gets eval'd in the instance, method_missing forwards calls to the
+      # template so that blocks get output correctly
+      instance_eval(&block) if block_given?
+    end
+
+    include DSL
+    include Rendering
+    include Resizing
+
+  protected
+
+    # since the define_table block gets instance_eval'd in the context of this object
+    # we need to proxy view methods (e.g. check_box_tag) back to the template
+    def method_missing(method_name, *args, &block) #:nodoc:
+      if @template.respond_to?(method_name)
+        @template.send(method_name, *args, &block)
+      else
+        super
+      end
+    end
+
+  end
 end

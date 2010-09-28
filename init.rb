@@ -1,2 +1,2 @@
 require 'cheveret'
-ActionView::Base.send :include, Cheveret::Helpers
+ActionView::Base.send :include, Cheveret::Helper
