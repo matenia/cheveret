@@ -76,7 +76,7 @@ module Cheveret
       end
 
       if @columns[name].present?
-        options.each { |k, v| @column[name].send(:"#{k}=", v) }
+        options.each { |k, v| @columns[name].send(:"#{k}=", v) }
       else
         @columns[name] = Column.new(name, options)
       end
