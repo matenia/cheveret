@@ -24,7 +24,7 @@
 module Cheveret
   module Filtering
     def config(new_config)
-      except, only = new_config[:except], new_config[:only]
+      except, only = new_config.delete(:except), new_config.delete(:only)
       if (except || only)
         @columns.reject! { |k, v| !only.include?(k) } if only
         # todo: support use of except

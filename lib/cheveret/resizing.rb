@@ -41,7 +41,7 @@ module Cheveret
     end
 
     def config(new_config={})
-      self.width = new_config[:width] if new_config[:width]
+      self.width = new_config.delete(:width) || self.width
       super
     end
 
