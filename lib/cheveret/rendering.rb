@@ -42,9 +42,9 @@ module Cheveret
         end
       end
 
-      content_tag(:div, row, {
-        :class => 'thead'
-      })
+      content_tag(:div, :class => 'thead') do
+        content_tag(:div, row, :class => 'tr')
+      end
     end
 
     def body(collection, options={})
