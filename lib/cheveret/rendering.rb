@@ -34,10 +34,10 @@ module Cheveret
     def header(options={})
       row  = @columns.values.map do |column|
         cell(:th, column) do
-          if column.sortable?
+          if column.sortable? # todo: abstract out sortable stuff
             content_tag(:a, column.label)
           else
-            column.label
+            content_tag(:span, column.label)
           end
         end
       end
