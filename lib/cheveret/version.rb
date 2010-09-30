@@ -26,7 +26,7 @@ module Cheveret
     MAJOR = 2
     MINOR = 0
     PATCH = 0
-    BUILD = 'rc1'
+    BUILD = 'rc2'
 
     STRING = [ MAJOR, MINOR, PATCH, BUILD ].join('.')
   end
