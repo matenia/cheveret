@@ -67,7 +67,10 @@ module Cheveret
     # @option options [Array,String] :class
     # @option options [Integer] :width
     def row(object, options={})
-      content_tag(:div, :class => 'tr') do
+      alt = cycle('', 'alt', :name => 'cheveret')
+      options[:class] = [ 'tr', alt, options[:class]].flatten.join(' ').strip
+
+      content_tag(:div, options) do
         @columns.values.map do |column|
           cell(:td, column) { send(:"data_for_#{column.name}", object) rescue nil }
         end
