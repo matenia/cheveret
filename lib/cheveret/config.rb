@@ -27,15 +27,16 @@ module Cheveret
     #
     # @param [Hash] new_config
     #   a hash of configuration options. gets merged with any existing config
-    def config(new_config)
-      if @config then @config.merge!(new_config) else @config = new_config.dup end
+    def config(new_config=nil)
+      return @config ||= {} if new_config.nil?
+      config.merge!(new_config)
     end
 
     [ :render, :header, :body, :rows ].each do |renderer|
       class_eval <<-RUBY_EVAL, __FILE__, __LINE__ + 1
         def #{renderer}(*args)
-          config = @config.merge(args.extract_options!)
-          super(*args << config)
+          options = config(args.extract_options!)
+          super(*args << options)
         end
       RUBY_EVAL
     end

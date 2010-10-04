@@ -23,7 +23,9 @@
 
 module Cheveret
   module Filtering
-    def config(new_config)
+    def config(new_config=nil)
+      return super if new_config.nil?
+
       except, only = new_config.delete(:except), new_config.delete(:only)
       if (except || only)
         @columns.reject! { |k, v| !only.include?(k) } if only

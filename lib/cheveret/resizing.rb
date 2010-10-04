@@ -40,7 +40,9 @@ module Cheveret
       resize!
     end
 
-    def config(new_config={})
+    def config(new_config=nil)
+      return super if new_config.nil?
+
       self.width = new_config.delete(:width) || self.width
       super
     end
