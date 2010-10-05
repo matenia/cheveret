@@ -23,7 +23,7 @@
 
 module Cheveret
   class Column
-    attr_accessor :name, :data, :label, :weight, :width
+    attr_accessor :name, :data, :label, :hint, :weight, :width
     attr_accessor :flexible, :sortable
 
     def initialize(name, config={})
