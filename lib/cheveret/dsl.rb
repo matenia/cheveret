@@ -68,7 +68,7 @@ module Cheveret
     # @option options [Integer] :width
     def column(name_or_hash, options={})
       if name_or_hash.is_a?(Hash)
-        name = name_or_hash.except(:label, :width).keys.first
+        name = name_or_hash.except(:label, :hint, :width).keys.first
         name_or_hash.delete(name).each { |k| options[k] = true }
         options.merge!(name_or_hash)
       else
