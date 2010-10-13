@@ -105,12 +105,15 @@ module Cheveret
       options = args.extract_options!
 
       [ *args.first || @columns.keys.last ].each do |column_name|
-        column = @columns[column_name ]
+        column = @columns[ column_name ]
         column.data = block
+
+        block_args = [ 'object ']
+        block_args.unshift("@columns[:#{column.name}]") if args.first
 
         instance_eval <<-RUBY_EVAL, __FILE__, __LINE__ + 1
           def data_for_#{column.name}(object)
-            capture(object, &@columns[:#{column.name}].data)
+            capture(#{block_args.join(', ')}, &@columns[:#{column.name}].data)
           end
         RUBY_EVAL
       end
