@@ -22,22 +22,13 @@
 #++
 
 module Cheveret
-  module Helper
-
-    def define_table(options={}, &block)
-      builder = options.delete(:builder) || ActionView::Base.default_table_builder
-      builder.new(self, &block)
+  module Table
+    class Base
+      include Cheveret::Table::Columns
+      include Cheveret::Table::Mapping
+      include Cheveret::Table::Rendering
+      include Cheveret::Table::Sizing
+      include Cheveret::Table::Sorting
     end
-=begin
-    def render_table(table, options={})
-      builder = options.delete(:builder) || Cheveret::Builder::Divider
-      builder.new(self, table, options)
-    end
-=end
-    ActionView::Base.class_eval do
-      cattr_accessor :default_table_builder
-      self.default_table_builder = Cheveret::Base
-    end
-
   end
 end

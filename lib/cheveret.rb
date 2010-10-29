@@ -31,4 +31,18 @@ module Cheveret
   autoload :Rendering, 'cheveret/rendering'
   autoload :Resizing,  'cheveret/resizing'
 
+  module Builder
+    autoload :Divider, 'cheveret/builder/divider.rb'
+  end
+
+  module Table
+    autoload :Base,      'cheveret/table'
+    autoload :Columns,   'cheveret/table/columns'
+    autoload :Locale,    'cheveret/table/locale'
+    autoload :Mapping,   'cheveret/table/mapping'
+    autoload :Rendering, 'cheveret/table/rendering'
+    autoload :Sizing,    'cheveret/table/sizing'
+    autoload :Sorting,   'cheveret/table/sorting'
+  end
+
 end

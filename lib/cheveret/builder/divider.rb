@@ -22,22 +22,21 @@
 #++
 
 module Cheveret
-  module Helper
+  module Builder
+    module Divider
 
-    def define_table(options={}, &block)
-      builder = options.delete(:builder) || ActionView::Base.default_table_builder
-      builder.new(self, &block)
-    end
-=begin
-    def render_table(table, options={})
-      builder = options.delete(:builder) || Cheveret::Builder::Divider
-      builder.new(self, table, options)
-    end
-=end
-    ActionView::Base.class_eval do
-      cattr_accessor :default_table_builder
-      self.default_table_builder = Cheveret::Base
-    end
+      ##
+      #
+      #
+      [ :table, :thead, :tbody, :tr, :th, :td ].each do |tag|
+        class_eval <<-RUBY_EVAL, __FILE__, __LINE__ + 1
+          def #{tag}_tag(options={})
+            options[:class] = [ '#{tag}', options[:class] ].flatten.join(' ').strip
+            template.content_tag(:div, options) { yield }
+          end
+        RUBY_EVAL
+      end
 
-  end
-end
+    end # Divider
+  end # Builder
+end # Cheveret
