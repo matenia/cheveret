@@ -43,7 +43,7 @@ module Cheveret
       def table_data(column, item)
         case column.data
         when Symbol then send(column.data, item)
-        when Proc then column.data.call(item)
+        when Proc then template.capture(item, &column.data)
         else
           "pass through"
         end
@@ -54,7 +54,7 @@ module Cheveret
         when String then column.label
         when false then nil
         else
-          column.name.humanize
+          column.name.to_s.humanize
         end
       end
 

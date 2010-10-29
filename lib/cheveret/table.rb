@@ -27,6 +27,7 @@ module Cheveret
       include Cheveret::Table::Columns
       include Cheveret::Table::Mapping
       include Cheveret::Table::Rendering
+      include Cheveret::Table::Locale
       include Cheveret::Table::Sizing
       include Cheveret::Table::Sorting
     end

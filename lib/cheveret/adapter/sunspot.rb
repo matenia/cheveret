@@ -33,20 +33,6 @@ module Cheveret
 
       module ClassMethods
 
-        ##
-        # magic
-        #
-        def column(*args)
-          new_column = super
-
-          # todo: don't let this override reserved stuff!
-          class_eval <<-RUBY_EVAL, __FILE__, __LINE__ + 1
-            def #{new_column.name}(item)
-              item.stored(:#{new_column.name})
-            end
-          RUBY_EVAL
-        end
-
       end # ClassMethods
 
     end # Sunspot

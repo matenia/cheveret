@@ -83,7 +83,10 @@ module Cheveret
       def table_header(column)
         return super unless column.sortable?
 
-        template.content_tag(:a, super)
+        sort_params = { :sort_column => column.name, :sort_direction => :asc }
+        template.content_tag(:a, super, {
+          :href => template.url_for(sort_url.merge(sort_params))
+        })
       end
 
     end # Sorting
