@@ -77,6 +77,15 @@ module Cheveret
         super
       end
 
+      ##
+      #
+      #
+      def table_header(column)
+        return super unless column.sortable?
+
+        template.content_tag(:a, super)
+      end
+
     end # Sorting
   end # Table
 end # Cheveret

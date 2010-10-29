@@ -51,7 +51,9 @@ module Cheveret
       def render_thead(options={})
         thead_tag(options) do
           tr_tag do
-            columns.values.map { |column| render_th(column) }
+            columns.values.map do |column|
+              render_th(column) { table_header(column) }
+            end
           end
         end
       end
@@ -64,7 +66,7 @@ module Cheveret
           collection.map do |item|
             tr_tag do
               columns.values.map do |column|
-                render_td(column) { send(column.name, item) }
+                render_td(column) { table_data(column, item) }
               end
             end
           end
@@ -78,9 +80,7 @@ module Cheveret
         options.reverse_merge!(column.th_html) if column.th_html
         options[:class] = [ column.name, *options[:class] ].flatten.join(' ').strip
 
-        th_tag(options) do
-          column.name
-        end
+        th_tag(options) { yield }
       end
 
       ##
@@ -90,9 +90,7 @@ module Cheveret
         options.reverse_merge!(column.td_html) if column.td_html
         options[:class] = [ column.name, *options[:class] ].flatten.join(' ').strip
 
-        td_tag(options) do
-          yield
-        end
+        td_tag(options) { yield }
       end
 
     end # Rendering

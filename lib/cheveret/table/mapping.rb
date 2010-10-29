@@ -40,6 +40,24 @@ module Cheveret
         attr_accessor :data, :header
       end # Mappable
 
+      def table_data(column, item)
+        case column.data
+        when Symbol then send(column.data, item)
+        when Proc then column.data.call(item)
+        else
+          "pass through"
+        end
+      end
+
+      def table_header(column)
+        case column.label
+        when String then column.label
+        when false then nil
+        else
+          column.name.humanize
+        end
+      end
+
     end # Mapping
   end # Table
 end # Cheveret
