@@ -22,17 +22,18 @@
 #++
 
 module Cheveret
-  autoload :Base,      'cheveret/base'
   autoload :Column,    'cheveret/column'
-  autoload :Config,    'cheveret/config'
-  autoload :DSL,       'cheveret/dsl'
-  autoload :Filtering, 'cheveret/filtering'
   autoload :Helper,    'cheveret/helper'
-  autoload :Rendering, 'cheveret/rendering'
-  autoload :Resizing,  'cheveret/resizing'
+
+  module Adapter
+    autoload :ActiveRecord, 'adapter/active_record'
+    autoload :Sunspot,      'adapter/sunspot'
+  end
 
   module Builder
-    autoload :Divider, 'cheveret/builder/divider.rb'
+    autoload :Divider,        'cheveret/builder/divider'
+    # autoload :DefinitionList, 'cheveret/builder/definition_list'
+    # autoload :Table,          'cheveret/builder/table'
   end
 
   module Table
