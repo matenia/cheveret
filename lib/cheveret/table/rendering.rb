@@ -62,15 +62,20 @@ module Cheveret
       #
       #
       def render_tbody(collection, options={})
-        tbody_tag(options) do
-          collection.map do |item|
-            tr_tag do
-              columns.values.map do |column|
-                render_td(column) { table_data(column, item) }
-              end
+        tbody_tag(options) { render_rows(collection) }
+      end
+
+      ##
+      #
+      #
+      def render_rows(collection, options={})
+        collection.map do |item|
+          tr_tag do
+            columns.values.map do |column|
+              render_td(column) { table_data(column, item) }
             end
           end
-        end
+        end.join("\n")
       end
 
       ##

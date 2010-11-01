@@ -69,7 +69,7 @@ module Cheveret
       # instance proxy method to get columns defined by the class
       #
       def columns
-        self.class.columns
+        @column ||= self.class.columns.dup
       end
 
     end # Columns
