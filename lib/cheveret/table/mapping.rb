@@ -48,7 +48,8 @@ module Cheveret
           template.capture(*args, &column.data)
         else
           if respond_to?(column.name)
-            send(column.name, item)
+            args.unshift(column) if method(column.name).arity > 1
+            send(column.name, *args)
           else
              table_data_for(column, item)
           end

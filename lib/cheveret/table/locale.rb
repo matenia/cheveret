@@ -34,7 +34,7 @@ module Cheveret
           hint  = ::I18n.translate("cheveret.hints.#{scope}.#{column.name}",
                                    :default => '')
 
-          options[:title] = hint.strip unless hint.blank?
+          options[:title] = hint.squish unless hint.blank?
         end
 
         super
@@ -46,7 +46,7 @@ module Cheveret
       def table_header_for(column)
         scope  = self.class.to_s.sub(/Table\Z/, '').underscore
         header = ::I18n.translate("cheveret.headers.#{scope}.#{column.name}",
-                                  :default => column.name.to_s.humanize)
+                                  :default => column.name.to_s.humanize).squish
       end
 
     end # Locale
