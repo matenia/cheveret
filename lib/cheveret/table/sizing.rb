@@ -43,13 +43,20 @@ module Cheveret
       end # ClassMethods
 
       module Sizable
-        attr_accessor :flexible, :width
+        attr_accessor :flexible, :size, :width
 
         ##
         #
         #
         def flexible?
           @flexible == true
+        end
+
+        ##
+        #
+        #
+        def size
+          @size || width
         end
 
         ##
@@ -68,19 +75,22 @@ module Cheveret
         @width ||= 0
       end
 
-      ##
-      #
-      #
-      def render_table(collection, options={})
-        options[:style] = "width:#{width}px;" if width > 0
-        super
+      [ :table, :tbody, :rows].each do |elem|
+        class_eval <<-RUBY_EVAL, __FILE__, __LINE__ + 1
+          def render_#{elem}(collection, options={})
+            resize! if needs_resize?
+
+            options[:style] = "width:\#{width}px;" if width > 0
+            super
+          end
+        RUBY_EVAL
       end
 
       ##
       #
       #
       def render_th(column, options={})
-        options[:style] = "width:#{column.width}px;" if column.width > 0
+        options[:style] = "width:#{column.size}px;" if column.size > 0
         super
       end
 
@@ -88,8 +98,36 @@ module Cheveret
       #
       #
       def render_td(column, options={})
-        options[:style] = "width:#{column.width}px;" if column.width > 0
+        options[:style] = "width:#{column.size}px;" if column.size > 0
         super
+      end
+
+      ##
+      #
+      #
+      def resize!
+        columns_width, flexibles = 0, []
+
+        columns.values.each do |column|
+          columns_width += column.width
+          flexibles << column if column.flexible?
+        end
+
+        # todo: handle too-many/too-wide columns
+        raise "uh-oh spaghettio-s" if columns_width > width
+
+        # todo: fix rounding in with calculation
+        if columns_width < width && !flexibles.empty?
+          padding = (width - columns_width) / flexibles.length
+          flexibles.each { |column| column.size = column.width + padding }
+        end
+      end
+
+      ##
+      #
+      #
+      def needs_resize?
+        columns.map(&:size).sum != width
       end
 
 

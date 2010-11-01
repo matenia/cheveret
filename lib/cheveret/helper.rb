@@ -51,7 +51,7 @@ module Cheveret
     ##
     #
     #
-    def cheveret_body
+    def cheveret_body(table, collection, options={})
       table.template = self
       options.keys.each do |option|
         table.send(:"#{option}=", options.delete(option)) if table.respond_to?(:"#{option}=")
