@@ -34,7 +34,7 @@ module Cheveret
         ::Cheveret::Column.send :include, Sortable
       end
 
-      attr_accessor :sort_column, :sort_direction, :sort_url
+      attr_accessor :sort_column, :sort_url
 
       module ClassMethods
 
@@ -72,6 +72,17 @@ module Cheveret
       ##
       #
       #
+      def sort_column
+        template.request.params[:sort_column] || @sort_column
+      end
+
+      def sort_direction
+        template.request.params[:sort_direction] || @sort_direction
+      end
+
+      ##
+      #
+      #
       def render_th(column, options={})
         options[:class] = 'sortable' if column.sortable?
         super
@@ -83,10 +94,16 @@ module Cheveret
       def table_header(column)
         return super unless column.sortable?
 
-        sort_params = { :sort_column => column.name, :sort_direction => :asc }
-        template.content_tag(:a, super, {
-          :href => template.url_for(sort_url.merge(sort_params))
-        })
+        params = { :sort_column => column.name, :sort_direction => :desc }
+        attrs  = {}
+
+        if column.name.to_s == sort_column
+          params[:sort_direction] = sort_direction == 'asc' ? 'desc' : 'asc'
+          attrs[:class] = "sorted #{sort_direction}"
+        end
+
+        attrs[:href] = template.url_for(sort_url.merge(params))
+        template.content_tag(:a, super, attrs)
       end
 
     end # Sorting
