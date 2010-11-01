@@ -34,7 +34,7 @@ module Cheveret
         ::Cheveret::Column.send :include, Sortable
       end
 
-      attr_accessor :sort_column, :sort_url
+      attr_accessor :sort_column, :sort_direction, :sort_url
 
       module ClassMethods
 
@@ -52,6 +52,7 @@ module Cheveret
         #
         #
         def default_sort(*args)
+          # todo: populate sort_column and sort_order attributes
           raise NotImplementedError
         end
 
@@ -76,6 +77,9 @@ module Cheveret
         template.request.params[:sort_column] || @sort_column
       end
 
+      ##
+      #
+      #
       def sort_direction
         template.request.params[:sort_direction] || @sort_direction
       end

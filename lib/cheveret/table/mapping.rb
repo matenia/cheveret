@@ -26,15 +26,8 @@ module Cheveret
     module Mapping
 
       def self.included(base)
-        base.module_eval do
-          extend ClassMethods
-        end
-
         ::Cheveret::Column.send :include, Mappable
       end
-
-      module ClassMethods
-      end # ClassMethods
 
       module Mappable
         attr_accessor :data, :header
