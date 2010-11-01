@@ -93,16 +93,16 @@ module Cheveret
         td_tag(options) { yield }
       end
 
-      def with_template(&block)
-        ::Cheveret::Util::ContextBoundDelegate.instance_eval_with_context(template, &block)
-      end
-
       ##
       #
       #
-      #def render(*args)
-      #  template.render(*args)
-      #end
+      def render(*args, &block)
+        if args.empty? && block_given?
+          template.instance_eval(&block)
+        else
+          template.render(*args, &block)
+        end
+      end
 
     end # Rendering
   end # Table
