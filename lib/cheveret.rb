@@ -22,8 +22,9 @@
 #++
 
 module Cheveret
-  autoload :Column,    'cheveret/column'
-  autoload :Helper,    'cheveret/helper'
+  autoload :Column, 'cheveret/column'
+  autoload :Helper, 'cheveret/helper'
+  autoload :Util,   'cheveret/util'
 
   module Adapter
     autoload :ActiveRecord, 'adapter/active_record'
