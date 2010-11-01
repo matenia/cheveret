@@ -66,7 +66,7 @@ module Cheveret
       end # ClassMethods
 
       ##
-      #
+      # instance proxy method to get columns defined by the class
       #
       def columns
         self.class.columns

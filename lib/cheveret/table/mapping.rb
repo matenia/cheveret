@@ -46,7 +46,10 @@ module Cheveret
       def table_data(column, item)
         case column.data
         when Symbol then send(column.data, item)
-        when Proc then template.capture(item, &column.data)
+        when Proc
+          args = [ item ]
+          args.unshift(column) if column.data.arity > 1
+          template.capture(*args, &column.data)
         else
           if respond_to?(column.name)
             send(column.name, item)
