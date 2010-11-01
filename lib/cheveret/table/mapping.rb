@@ -40,22 +40,47 @@ module Cheveret
         attr_accessor :data, :header
       end # Mappable
 
+      ##
+      #
+      #
       def table_data(column, item)
         case column.data
         when Symbol then send(column.data, item)
         when Proc then template.capture(item, &column.data)
         else
-          "pass through"
+          if respond_to?(column.name)
+            send(column.name, item)
+          else
+             table_data_for(column, item)
+          end
         end
       end
 
+      ##
+      #
+      #
+      def table_data_for(column, item)
+        raise NotImplementedError
+      end
+
+      ##
+      #
+      #
       def table_header(column)
-        case column.label
-        when String then column.label
-        when false then nil
+        case column.header
+        when Symbol then send(column.header)
+        when Proc then template.capture(&column.header)
+        when String then column.header
         else
-          column.name.to_s.humanize
+          table_header_for(column) unless column.header == false
         end
+      end
+
+      ##
+      #
+      #
+      def table_header_for(column)
+        raise NotImplementedError
       end
 
     end # Mapping

@@ -23,7 +23,7 @@
 
 module Cheveret
   class Column
-    attr_accessor :name, :data, :label, :hint, :weight
+    attr_accessor :name, :hint, :weight
     attr_accessor :th_html, :td_html
 
     def initialize(name, options=nil)
@@ -36,17 +36,6 @@ module Cheveret
     #
     def config(options)
       options.each { |k, v| instance_variable_set(:"@#{k}", v) if respond_to?(:"#{k}=") }
-    end
-
-    ##
-    #
-    #
-    def label
-      case @label
-      when nil then @name.to_s.humanize # todo: support i18n for column labels
-      when false then nil
-      else @label
-      end
     end
 
   end

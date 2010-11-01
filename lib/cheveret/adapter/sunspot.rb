@@ -25,15 +25,19 @@ module Cheveret
   module Adapter
     module Sunspot
 
-      def self.included(base)
-        base.module_eval do
-          extend ClassMethods
-        end
+      ##
+      #
+      #
+      def table_data_for(column, item)
+        item.stored(column.name)
       end
 
-      module ClassMethods
-
-      end # ClassMethods
+      ##
+      #
+      #
+      #def table_header_for(column, item)
+      #  column.name.to_s.humanize
+      #end
 
     end # Sunspot
   end # Adapter

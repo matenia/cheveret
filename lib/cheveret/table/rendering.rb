@@ -93,6 +93,13 @@ module Cheveret
         td_tag(options) { yield }
       end
 
+      ##
+      #
+      #
+      def render(*args)
+        template.render(*args)
+      end
+
     end # Rendering
   end # Table
 end # Cheveret

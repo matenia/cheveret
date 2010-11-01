@@ -25,6 +25,30 @@ module Cheveret
   module Table
     module Locale
 
+      ##
+      #
+      #
+      def render_th(column, options={})
+        unless options[:title]
+          scope = self.class.to_s.sub(/Table\Z/, '').underscore
+          hint  = ::I18n.translate("cheveret.hints.#{scope}.#{column.name}",
+                                   :default => '')
+
+          options[:title] = hint.strip unless hint.blank?
+        end
+
+        super
+      end
+
+      ##
+      #
+      #
+      def table_header_for(column)
+        scope  = self.class.to_s.sub(/Table\Z/, '').underscore
+        header = ::I18n.translate("cheveret.headers.#{scope}.#{column.name}",
+                                  :default => column.name.to_s.humanize)
+      end
+
     end # Locale
   end # Table
 end # Cheveret
