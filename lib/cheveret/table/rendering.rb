@@ -69,8 +69,12 @@ module Cheveret
       #
       #
       def render_rows(collection, options={})
+        template.reset_cycle('cheveret')
+
         collection.map do |item|
-          tr_tag do
+          cycle = template.cycle('', 'alt', :name => 'cheveret')
+
+          tr_tag(:class => cycle) do
             columns.values.map do |column|
               render_td(column) { table_data(column, item) }
             end
