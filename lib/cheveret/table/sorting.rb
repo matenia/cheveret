@@ -96,7 +96,8 @@ module Cheveret
       #
       #
       def table_header(column)
-        return super unless column.sortable?
+        # wrap unsortable columns in a <span> tag
+        return template.content_tag(:span, super) unless column.sortable?
 
         params = { :sort_column => column.name, :sort_direction => :desc }
         attrs  = {}

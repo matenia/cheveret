@@ -30,6 +30,9 @@ module Cheveret
       include Cheveret::Table::Locale
       include Cheveret::Table::Sizing
       include Cheveret::Table::Sorting
+
+      include Cheveret::Builder::Divider
+      #include Cheveret::Adapter::ActiveRecord
     end
   end
 end

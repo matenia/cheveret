@@ -75,13 +75,14 @@ module Cheveret
         @width ||= 0
       end
 
-      [ :table, :tbody, :rows].each do |elem|
+      [ :table, :thead, :tbody, :rows].each do |elem|
         class_eval <<-RUBY_EVAL, __FILE__, __LINE__ + 1
-          def render_#{elem}(collection, options={})
+          def render_#{elem}(*args)
             resize! if needs_resize?
 
+            options = args.extract_options!
             options[:style] = "width:\#{width}px;" if width > 0
-            super
+            super(*(args << options))
           end
         RUBY_EVAL
       end
