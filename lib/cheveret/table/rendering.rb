@@ -39,9 +39,9 @@ module Cheveret
       ##
       #
       #
-      def render_table(collection, options={})
+      def render_table(options={})
         table_tag(options) do
-          render_thead << render_tbody(collection)
+          render_thead << render_tbody
         end
       end
 
@@ -61,14 +61,14 @@ module Cheveret
       ##
       #
       #
-      def render_tbody(collection, options={})
-        tbody_tag(options) { render_rows(collection) }
+      def render_tbody(options={})
+        tbody_tag(options) { render_rows }
       end
 
       ##
       #
       #
-      def render_rows(collection, options={})
+      def render_rows(options={})
         template.reset_cycle('cheveret')
 
         collection.map do |item|

@@ -27,13 +27,13 @@ module Cheveret
     ##
     #
     #
-    def cheveret_table(table, collection, options={})
+    def cheveret_table(table, options={})
       table.template = self
       options.keys.each do |option|
         table.send(:"#{option}=", options.delete(option)) if table.respond_to?(:"#{option}=")
       end
 
-      table.render_table(collection, options)
+      table.render_table(options)
     end
 
     ##
@@ -51,25 +51,25 @@ module Cheveret
     ##
     #
     #
-    def cheveret_body(table, collection, options={})
+    def cheveret_body(table, options={})
       table.template = self
       options.keys.each do |option|
         table.send(:"#{option}=", options.delete(option)) if table.respond_to?(:"#{option}=")
       end
 
-      table.render_tbody(collection, options)
+      table.render_tbody(options)
     end
 
     ##
     #
     #
-    def cheveret_rows(table, collection, options={})
+    def cheveret_rows(table, options={})
       table.template = self
       options.keys.each do |option|
         table.send(:"#{option}=", options.delete(option)) if table.respond_to?(:"#{option}=")
       end
 
-      table.render_rows(collection, options)
+      table.render_rows(options)
     end
 
   end # Helper

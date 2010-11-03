@@ -22,21 +22,41 @@
 #++
 
 module Cheveret
-  class Column
-    attr_accessor :name, :weight
-    attr_accessor :th_html, :td_html
+  module Table
+    module Data
 
-    def initialize(name, options=nil)
-      @name = name
-      config(options) unless options.nil?
-    end
+      attr_accessor :collection
 
-    ##
-    #
-    #
-    def config(options)
-      options.each { |k, v| send(:"#{k}=", v) if respond_to?(:"#{k}=") }
-    end
+      ##
+      #
+      #
+      def initialize(collection=[], options={})
+        if block_given?
+          yield self
+        else
+          config(options.merge({ :collection => collection }))
+        end
+      end
 
-  end
-end
+      ##
+      #
+      #
+      def collection
+        @collection ||= []
+      end
+
+      ##
+      #
+      #
+      [ :each, :empty?, :length, :map ].each do |proxy|
+        # there is a nicer way to do this using forwardable, but this works for now
+        class_eval <<-RUBY_EVAL, __FILE__, __LINE__ + 1
+          def #{proxy}(*args)
+            collection.#{proxy}(*args)
+          end
+        RUBY_EVAL
+      end
+
+    end # Data
+  end # Table
+end #Cheveret

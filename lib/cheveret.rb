@@ -39,6 +39,7 @@ module Cheveret
   module Table
     autoload :Base,      'cheveret/table'
     autoload :Columns,   'cheveret/table/columns'
+    autoload :Data,      'cheveret/table/data'
     autoload :Locale,    'cheveret/table/locale'
     autoload :Mapping,   'cheveret/table/mapping'
     autoload :Rendering, 'cheveret/table/rendering'

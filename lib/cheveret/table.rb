@@ -25,6 +25,7 @@ module Cheveret
   module Table
     class Base
       include Cheveret::Table::Columns
+      include Cheveret::Table::Data
       include Cheveret::Table::Mapping
       include Cheveret::Table::Rendering
       include Cheveret::Table::Locale
@@ -33,6 +34,14 @@ module Cheveret
 
       include Cheveret::Builder::Divider
       #include Cheveret::Adapter::ActiveRecord
-    end
-  end
-end
+
+      ##
+      #
+      #
+      def config(options)
+        options.each { |k, v| send(:"#{k}=", v) if respond_to?(:"#{k}=") }
+      end
+
+    end # Base
+  end # Table
+end # Cheveret
