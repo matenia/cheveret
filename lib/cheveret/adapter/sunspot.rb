@@ -35,9 +35,22 @@ module Cheveret
       ##
       #
       #
-      #def table_header_for(column, item)
-      #  column.name.to_s.humanize
-      #end
+      [ :current_page,
+        :next_page,
+        :offset,
+        :per_page,
+        :total,
+        :total_entries,
+        :total_pages
+      ].each do |proxy|
+        # this is really territory of will_paginate
+        class_eval <<-RUBY_EVAL, __FILE__, __LINE__ + 1
+          def #{proxy}(*args)
+            return 0 unless collection.respond_to?(:#{proxy})
+            collection.#{proxy}(*args)
+          end
+        RUBY_EVAL
+      end
 
     end # Sunspot
   end # Adapter
