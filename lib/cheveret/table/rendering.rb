@@ -83,11 +83,15 @@ module Cheveret
       end
 
       ##
-      #
+      # generates a <th> tag for the specified column using the configured builder
       #
       def render_th(column, options={})
         options.reverse_merge!(column.th_html) if column.th_html
-        options[:class] = [ column.name, *options[:class] ].flatten.join(' ').strip
+
+        # phwarrrgg!
+        options[:class] = ([ column.name, options[:class],
+          column.th_html ? column.th_html[:class] : nil
+        ]).flatten.join(' ').strip
 
         th_tag(options) { yield }
       end
