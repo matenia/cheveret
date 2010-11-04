@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{cheveret}
-  s.version = "2.0.0.rc5"
+  s.version = "3.0.0"
 
-  s.required_rubygems_version = Gem::Requirement.new("> 1.3.1") if s.respond_to? :required_rubygems_version=
+  s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Ben Caldwell"]
-  s.date = %q{2010-10-07}
+  s.date = %q{2010-11-05}
   s.description = %q{Generating HTML tables of data in the views of your Rails
 application is not very DRY even for the simpler of cases. Cheveret allows you to more
 clearly separate logic and templating and reduce the amount of code in your views.}
@@ -27,14 +27,19 @@ clearly separate logic and templating and reduce the amount of code in your view
      "cheveret.gemspec",
      "init.rb",
      "lib/cheveret.rb",
-     "lib/cheveret/base.rb",
+     "lib/cheveret/adapter/active_record.rb",
+     "lib/cheveret/adapter/sunspot.rb",
+     "lib/cheveret/builder/divider.rb",
      "lib/cheveret/column.rb",
-     "lib/cheveret/config.rb",
-     "lib/cheveret/dsl.rb",
-     "lib/cheveret/filtering.rb",
      "lib/cheveret/helper.rb",
-     "lib/cheveret/rendering.rb",
-     "lib/cheveret/resizing.rb",
+     "lib/cheveret/table.rb",
+     "lib/cheveret/table/columns.rb",
+     "lib/cheveret/table/data.rb",
+     "lib/cheveret/table/locale.rb",
+     "lib/cheveret/table/mapping.rb",
+     "lib/cheveret/table/rendering.rb",
+     "lib/cheveret/table/sizing.rb",
+     "lib/cheveret/table/sorting.rb",
      "lib/cheveret/version.rb",
      "rails/init.rb",
      "spec/cheveret_spec.rb",

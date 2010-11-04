@@ -23,11 +23,10 @@
 
 module Cheveret
   module VERSION
-    MAJOR = 2
+    MAJOR = 3
     MINOR = 0
     PATCH = 0
-    BUILD = 'rc5'
 
-    STRING = [ MAJOR, MINOR, PATCH, BUILD ].join('.')
+    STRING = [ MAJOR, MINOR, PATCH ].join('.')
   end
 end
