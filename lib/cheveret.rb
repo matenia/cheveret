@@ -26,8 +26,8 @@ module Cheveret
   autoload :Helper, 'cheveret/helper'
 
   module Adapter
-    autoload :ActiveRecord, 'adapter/active_record'
-    autoload :Sunspot,      'adapter/sunspot'
+    autoload :ActiveRecord, 'cheveret/adapter/active_record'
+    autoload :Sunspot,      'cheveret/adapter/sunspot'
   end
 
   module Builder
