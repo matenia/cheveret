@@ -34,7 +34,7 @@ module Cheveret
         ::Cheveret::Column.send :include, Sortable
       end
 
-      attr_accessor :params, :sort_column, :sort_direction, :sort_url
+      attr_accessor :sort_column, :sort_direction, :sort_param, :sort_url
 
       module ClassMethods
 
@@ -49,7 +49,7 @@ module Cheveret
         end
 
         ##
-        #
+        # TODO: depricate
         #
         def default_sort(column_name, direction)
           raise ArgumentError 'Column not found' unless columns.has_key?(column_name)
@@ -58,18 +58,10 @@ module Cheveret
           @default_sort_direction = direction
         end
 
-        def default_sort_column
-          @default_sort_column 
-        end
-
-        def default_sort_direction
-          @default_sort_direction || :asc
-        end
-
       end # ClassMethods
 
       module Sortable
-        attr_accessor :sortable, :sort_key
+        attr_accessor :default_sort_direction, :sortable
 
         ##
         # whether or not sorting the table by this column is allowed. default +false+
@@ -78,44 +70,17 @@ module Cheveret
           sortable == true
         end
 
-        def sort_key
-          @sort_key || name
+        def default_sort_direction
+          @default_sort_direction ||= :desc
         end
 
       end # Sortable
 
-      def default_sort_column
-        self.class.default_sort_column
-      end
-
-      def default_sort_direction
-        self.class.default_sort_direction
-      end
-
       ##
       #
       #
-      def sort_column
-        column = if params[:sort_column]
-          columns[params[:sort_column].to_sym]
-        else
-          default_sort_column
-        end
-      end
-
-      ##
-      #
-      #
-      def sort_key
-        sort_column.sort_key # return all keys - multiple sort?
-      end
-
-      def sort_direction
-        if params[:sort_direction]
-          params[:sort_direction].to_sym
-        else
-          default_sort_direction
-        end
+      def sort_param
+        @sort_param ||= '%s'
       end
 
       ##
@@ -133,11 +98,15 @@ module Cheveret
         # wrap unsortable columns in a <span> tag
         return template.content_tag(:span, super) unless column.sortable?
 
-        query = { :sort_column => column.name, :sort_direction => :desc }
-        attrs  = {}
+        column_key = sort_param % 'sort_column'
+        direction_key = sort_param % 'sort_direction'
 
-        if column == sort_column
-          query[:sort_direction] = ( sort_direction == :asc ? :desc : :asc )
+        attrs = {}
+        query = { column_key => column.name,
+                  direction_key => column.default_sort_direction }
+
+        if column.name == sort_column
+          query[direction_key] = ( sort_direction == :asc ? :desc : :asc )
           attrs[:class] = "sorted #{sort_direction}"
         end
 
