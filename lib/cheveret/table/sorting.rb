@@ -87,7 +87,12 @@ module Cheveret
       #
       #
       def render_th(column, options={})
-        options[:class] = 'sortable' if column.sortable?
+        super unless column.sortable?
+
+        options[:class] = [ 'sortable', *options[:class] ]
+        options[:class] << 'sorted' if column.name == sort_column
+        options[:class].flatten.join(' ').strip
+
         super
       end
 
@@ -107,7 +112,7 @@ module Cheveret
 
         if column.name == sort_column
           query[direction_key] = ( sort_direction == :asc ? :desc : :asc )
-          attrs[:class] = "sorted #{sort_direction}"
+          attrs[:class] = "#{sort_direction}"
         end
 
         attrs[:href] = template.url_for(sort_url.merge(query))
