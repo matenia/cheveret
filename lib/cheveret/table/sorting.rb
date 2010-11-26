@@ -87,7 +87,7 @@ module Cheveret
       #
       #
       def render_th(column, options={})
-        super unless column.sortable?
+        return super unless column.sortable?
 
         options[:class] = [ 'sortable', *options[:class] ]
         options[:class] << 'sorted' if column.name == sort_column
