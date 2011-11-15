@@ -114,7 +114,8 @@ module Cheveret
           query[direction_key] = ( sort_direction == :asc ? :desc : :asc )
           attrs[:class] = "#{sort_direction}"
         end
-
+        
+        attrs[:rel] = 'nofollow'
         attrs[:href] = template.url_for(sort_url.merge(query))
         template.content_tag(:a, super, attrs)
       end
